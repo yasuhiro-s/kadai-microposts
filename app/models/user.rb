@@ -34,7 +34,16 @@ class User < ApplicationRecord
   end
 
   has_many :favorites
-  has_many :likings, through: :favorites, source: :micropost
+  
+  # def favorites
+  #   Favorite.where(user_id: self.id)
+  # end
+  
+  has_many :likes, through: :favorites, source: :micropost
+  
+  # def likings
+  #   Micropost.where(id: Favorite.where(user_id: self.id).pluck(:micropost_id))
+  # end
 
   def like(micropost)
     self.favorites.find_or_create_by(micropost_id: micropost.id)
@@ -45,8 +54,12 @@ class User < ApplicationRecord
     favorite.destroy if favorite
   end
 
-  def liking?(micropost)
-    self.likings.include?(micropost)
+  def likes?(micropost)
+    self.likes.include?(micropost)
+    # [1,2,3].include?(1)
+    # [1,2,3].include?("1")
+    # [Micropost.find(1), Micropost.find(2)].include?(Micropost.find(1))
+    # [Favorite.find(1), Favorite.find(2)].include?(Micropost.find(1))
     #[オブジェクトの配列].含まれますか?(単一のオブジェクト)
   end
 end
